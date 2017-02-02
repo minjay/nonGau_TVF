@@ -14,5 +14,5 @@ plot([-angle fliplr(angle)], [mag fliplr(mag)], 'LineWidth', 1.5)
 legend('j=0', 'j=1', 'j=2', 'j=3', 'j=4', 'Location', 'Best')
 axis tight
 xlabel('Great-circle distance')
-ylabel('Cross section of \Psi^{(i)}_{jk}, i=2,3')
+ylabel('Cross section of ||\Psi^{(i)}_{jk}||, i=2,3')
 set(gca, 'FontSize', 12)
