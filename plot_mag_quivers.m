@@ -1,4 +1,4 @@
-function plot_mag_quivers(theta, phi, u, v)
+function plot_mag_quivers(theta, phi, u, v, theta_grid, phi_grid, f)
 %PLOT_QUIVERS   Plots simulated samples on the sphere (after Hammer
 %   projection).
 %
@@ -11,13 +11,15 @@ function plot_mag_quivers(theta, phi, u, v)
 % Author: Minjie Fan, 2015
 
 % convert theta and phi
+theta_grid = pi/2-theta_grid;
 theta = pi/2-theta;
-phi(phi>pi)=phi(phi>pi)-2*pi;
-
+phi(phi>pi) = phi(phi>pi)-2*pi;
+[HX_grid, HY_grid] = sph2hammer(phi_grid, theta_grid);
 [HX, HY] = sph2hammer(phi, theta);
-quiver(HX, HY, u, v, 'b');
-
+pcolor(HX_grid, HY_grid, f);
+shading flat
 hold on
+quiver(HX, HY, u, v, 'k');
 
 % draw contour
 th = linspace(-pi/2,pi/2,101);
