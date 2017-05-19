@@ -1,12 +1,16 @@
 clear
 clc
 
+addpath(genpath('/Users/minjay/Documents/MATLAB/asp'))
+% set seed
+rng(1)
+
 B = 2;
-j_min = 2;
+j_min = 1;
 j_max = 3;
 
 % the sampling locations
-Nside = 16;
+Nside = 8;
 tp = pix2ang(Nside, 'nest', false);
 N = length(tp);
 theta = zeros(N, 1);
@@ -38,51 +42,70 @@ end
 gamma_all = [gamma(:, 1); gamma(:, 2)];
 
 % white noise std
-tau = 0.05;
+% between 0.1 and 0.2
+tau = 0.15;
 Y_signal = A_norm*gamma_all;
 Y = Y_signal+tau*randn(N*2, 1);
 
 factors = [0.1 0.2 0.5 1];
+n_factor = length(factors);
 lambdas_bpdn = factors*tau*sqrt(2*log(2*M));
-opts          = as_setparms;
-opts.loglevel = 1;
-inform        = [];  % IMPORTANT: must initialize in this way.
-Y_recover = cell(length(factors), 1);
-beta_rec = cell(length(factors), 1);
-for i = 1:length(factors)
+Y_recover = cell(n_factor, 1);
+betas = cell(n_factor, 1);
+for i = 1:n_factor
+    opts = as_setparms;
+    opts.loglevel = 1;
+    inform = [];
     [beta, inform] = as_bpdn(A_norm, Y, lambdas_bpdn(i), opts, inform);
     Y_recover{i} = A_norm*beta;
-    beta_rec{i} = beta;
+    betas{i} = beta;
 end
 
-h = figure;
-scale = 2;
+figure
+% between 3 and 5
+scale = 4;
 subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.02], [0.05 0.05], [0.01 0.01]);
 
-subplot(1, 2, 1)
+subplot(3, 2, 1)
 plot_quivers_true_size(theta, phi, Y(1:N)/scale, Y(N+1:end)/scale, 'b')
 hold on
 draw_contour
 title('Observed (Noisy)')
 
-subplot(1, 2, 2)
+subplot(3, 2, 2)
 plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale, 'b')
 hold on
-plot_quivers_true_size(theta, phi, Y_recover{1}(1:N)/scale, Y_recover{1}(N+1:end)/scale, [1.000000 0.000000 0.500000])
+draw_contour
+title('Signal')
+
+for i = 1:n_factor
+    subplot(3, 2, i+2)
+    plot_quivers_true_size(theta, phi, Y_recover{i}(1:N)/scale, Y_recover{i}(N+1:end)/scale, 'b')
+    hold on
+    draw_contour
+    title(['Recovered (alpha=', num2str(factors(i)), ')'])
+end
+
+figure
+plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale, 'b')
+hold on
+plot_quivers_true_size(theta, phi, Y_recover{2}(1:N)/scale, Y_recover{2}(N+1:end)/scale, [1.000000 0.000000 0.500000])
 draw_contour
 title('Signal and Recovered')
-legend('Signal', 'Recovered')
+legend('Signal', 'Recovered', 'Location', 'bestoutside')
 legend('boxoff')
-
-set(h, 'Position', [0, 0, 300, 350]);
 
 figure
 clear subplot
 subplot(1, 2, 1)
 stem(gamma(:, 1))
 hold on
-plot(beta(1:M), 'r*')
+plot(betas{2}(1:M), 'r*')
+legend('True', 'Recovered')
+title('Curl-free')
 subplot(1, 2, 2)
 stem(gamma(:, 2))
 hold on
-plot(beta(M+1:end), 'r*')
+plot(betas{2}(M+1:end), 'r*')
+legend('True', 'Recovered')
+title('Div-free')
