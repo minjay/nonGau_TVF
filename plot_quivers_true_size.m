@@ -1,4 +1,4 @@
-function plot_quivers(theta, phi, u, v)
+function plot_quivers_true_size(theta, phi, u, v, color)
 %PLOT_QUIVERS   Plots simulated samples on the sphere (after Hammer
 %   projection).
 %
@@ -15,23 +15,10 @@ theta = pi/2-theta;
 phi(phi>pi)=phi(phi>pi)-2*pi;
 
 [HX, HY] = sph2hammer(phi, theta);
-quiver(HX, HY, u, v, 'b');
-
-hold on
-
-% draw contour
-th = linspace(-pi/2,pi/2,101);
-lam = -pi+0*th;
-[xh,yh] = sph2hammer(lam,th);
-plot(xh,yh,'k');
-lam = pi+0*th;
-[xh,yh] = sph2hammer(lam,th);
-plot(xh,yh,'k');
+quiver(HX, HY, u, v, 'color', color, 'Autoscale', 'off');
 
 axis equal
 axis tight
 axis off
-
-set(gca, 'FontSize', 12)
 
 end
