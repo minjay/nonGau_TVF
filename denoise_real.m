@@ -100,7 +100,7 @@ end
 figure
 plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale, 'b')
 hold on
-plot_quivers_true_size(theta, phi, Y_recover{1}(1:N)/scale, Y_recover{1}(N+1:end)/scale, [1.000000 0.000000 0.500000])
+plot_quivers_true_size(theta, phi, Y_recover{2}(1:N)/scale, Y_recover{2}(N+1:end)/scale, [1.000000 0.000000 0.500000])
 draw_contour
 title('Signal and Recovered')
 legend('Signal', 'Recovered', 'Location', 'bestoutside')
