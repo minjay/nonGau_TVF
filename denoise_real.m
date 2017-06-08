@@ -59,7 +59,7 @@ N = length(uwnd_sub_v);
 rng(1)
 Y = Y_signal+tau*randn(N*2, 1);
 
-A_norm_sub = [A_norm(:, 1:sum(Npix(1:2))) A_norm(:, M+1:M+sum(Npix(1:2)))];
+A_norm_sub = [A_norm(:, 1:sum(Npix(1:4))) A_norm(:, M+1:M+sum(Npix(1:4)))];
 % A^{+}Y
 beta_est_sub = pinv(A_norm_sub)*Y;
 beta_est = pinv(A_norm)*Y;
@@ -92,21 +92,32 @@ for i = 1:n_factor
     betas{i} = beta;
     df_zou(i) = sum(beta~=0);
     df_tib(i) = rank(A_norm(:, beta~=0));
-    AIC(i) = sum((Y-A_norm*beta).^2)/N/(tau_est^2)+2/N*df_tib(i);
-    AICc(i) = AIC(i)+2*df_tib(i)*(df_tib(i)+1)/(N-df_tib(i)-1)/N;
-    L2_err(i) = norm(Y_recover{i}-Y_signal);
+end
+
+for i = 1:n_factor
+    AIC(i) = sum((Y-A_norm*betas{i}).^2)/(N*2)/(tau_est^2)+2/(N*2)*df_tib(i);
+    AICc(i) = AIC(i)+2*df_tib(i)*(df_tib(i)+1)/(N*2-df_tib(i)-1)/(N*2);
+    MSE(i) = mean((Y_recover{i}-Y_signal).^2);
 end
 
 % plot information criteria
 figure
-plot(factors, [L2_err AIC AICc], '-o', 'LineWidth', 1.5)
-legend('L2-err', 'AIC', 'AICc', 'Location', 'Best')
+subplot(2, 1, 1)
+plot(factors, MSE, '-o', 'LineWidth', 1.5)
+legend('MSE', 'Location', 'Best')
 set(gca, 'FontSize', 12)
 hold on
-[~, index_L2_err] = min(L2_err);
-plot(factors(index_L2_err), L2_err(index_L2_err), 'r*')
+[~, index_MSE] = min(MSE);
+plot(factors(index_MSE), MSE(index_MSE), 'r*')
+subplot(2, 1, 2)
+plot(factors, [AIC AICc], '-o', 'LineWidth', 1.5)
+legend('AIC', 'AICc', 'Location', 'Best')
+set(gca, 'FontSize', 12)
+hold on
 [~, index_AIC] = min(AIC);
 plot(factors(index_AIC), AIC(index_AIC), 'r*')
+[~, index_AICc] = min(AICc);
+plot(factors(index_AICc), AICc(index_AICc), 'r*')
 xlabel('c_i')
 
 figure
