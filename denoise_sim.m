@@ -70,7 +70,7 @@ Y_recover = cell(n_factor, 1);
 betas = cell(n_factor, 1);
 AIC = zeros(n_factor, 1);
 AICc = zeros(n_factor, 1);
-SSE = zeros(n_factor, 1);
+L2_err = zeros(n_factor, 1);
 df_zou = zeros(n_factor, 1);
 % this is more appropriate
 df_tib = zeros(n_factor, 1);
@@ -86,17 +86,17 @@ for i = 1:n_factor
     df_tib(i) = rank(A_norm(:, beta~=0));
     AIC(i) = sum((Y-A_norm*beta).^2)/N/(tau_est^2)+2/N*df_tib(i);
     AICc(i) = AIC(i)+2*df_tib(i)*(df_tib(i)+1)/(N-df_tib(i)-1)/N;
-    SSE(i) = sum((Y_recover{i}-Y_signal).^2);
+    L2_err(i) = norm(Y_recover{i}-Y_signal);
 end
 
 % plot information criteria
 figure
-plot(factors, [SSE AIC AICc], '-o', 'LineWidth', 1.5)
-legend('SSE', 'AIC', 'AICc', 'Location', 'Best')
+plot(factors, [L2_err AIC AICc], '-o', 'LineWidth', 1.5)
+legend('L2_err', 'AIC', 'AICc', 'Location', 'Best')
 set(gca, 'FontSize', 12)
 hold on
-[~, index_SSE] = min(SSE);
-plot(factors(index_SSE), SSE(index_SSE), 'r*')
+[~, index_L2_err] = min(L2_err);
+plot(factors(index_L2_err), L2_err(index_L2_err), 'r*')
 [~, index_AIC] = min(AIC);
 plot(factors(index_AIC), AIC(index_AIC), 'r*')
 xlabel('c_i')
