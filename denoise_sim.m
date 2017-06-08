@@ -47,65 +47,74 @@ tau = 0.15;
 Y_signal = A_norm*gamma_all;
 Y = Y_signal+tau*randn(N*2, 1);
 
-factors = [0.1 0.2 0.5 1];
+% we need to know/have a good guess of how many levels it has
+% whether the noise level is relatively large or small
+% if the noise level is large, we need to use fewer levels
+% otherwise, we need to use more levels
+A_norm_sub = [A_norm(:, 1:sum(Npix(1:2))) A_norm(:, M+1:M+sum(Npix(1:2)))];
+% A^{+}Y
+beta_est_sub = pinv(A_norm_sub)*Y;
+beta_est = pinv(A_norm)*Y;
+resid_sub = Y-A_norm_sub*beta_est_sub;
+resid = Y-A_norm*beta_est;
+tau_est = std(resid_sub)
+std(resid)
+% MAD/0.6745
+median(abs(resid_sub-median(resid_sub)))/0.6745
+median(abs(resid-median(resid)))/0.6745
+
+factors = 0.05:0.05:1.5;
 n_factor = length(factors);
-lambdas_bpdn = factors*tau*sqrt(2*log(2*M));
+lambdas_bpdn = factors*tau_est*sqrt(2*log(2*M));
 Y_recover = cell(n_factor, 1);
 betas = cell(n_factor, 1);
+AIC = zeros(n_factor, 1);
+AICc = zeros(n_factor, 1);
+MSE = zeros(n_factor, 1);
+df_zou = zeros(n_factor, 1);
+% this is more appropriate
+df_tib = zeros(n_factor, 1);
+opts = as_setparms;
+opts.loglevel = 1;
+inform = [];
 for i = 1:n_factor
-    opts = as_setparms;
-    opts.loglevel = 1;
-    inform = [];
+    % "inform" is used for warm start
     [beta, inform] = as_bpdn(A_norm, Y, lambdas_bpdn(i), opts, inform);
     Y_recover{i} = A_norm*beta;
     betas{i} = beta;
+    df_zou(i) = sum(beta~=0);
+    df_tib(i) = rank(A_norm(:, beta~=0));
+    AIC(i) = sum((Y-A_norm*beta).^2)/N/(tau_est^2)+2/N*df_tib(i);
+    AICc(i) = AIC(i)+2*df_tib(i)*(df_tib(i)+1)/(N-df_tib(i)-1)/N;
+    MSE(i) = mean((Y_recover{i}-Y_signal).^2);
 end
 
+% plot information criteria
 figure
+plot(factors, [MSE AIC AICc], '-o', 'LineWidth', 1.5)
+legend('MSE', 'AIC', 'AICc', 'Location', 'Best')
+set(gca, 'FontSize', 12)
+hold on
+[~, index_MSE] = min(MSE);
+plot(factors(index_MSE), MSE(index_MSE), 'r*')
+[~, index_AIC] = min(AIC);
+plot(factors(index_AIC), AIC(index_AIC), 'r*')
+xlabel('c_i')
+
+figure
+subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.02], [0.05 0.05], [0.01 0.01]);
 % between 3 and 5
 scale = 4;
-subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.02], [0.05 0.05], [0.01 0.01]);
-
-subplot(3, 2, 1)
+subplot(1, 2, 1)
 plot_quivers_true_size(theta, phi, Y(1:N)/scale, Y(N+1:end)/scale, 'b')
 hold on
 draw_contour
 title('Observed (Noisy)')
-
-subplot(3, 2, 2)
+subplot(1, 2, 2)
 plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale, 'b')
 hold on
-draw_contour
-title('Signal')
-
-for i = 1:n_factor
-    subplot(3, 2, i+2)
-    plot_quivers_true_size(theta, phi, Y_recover{i}(1:N)/scale, Y_recover{i}(N+1:end)/scale, 'b')
-    hold on
-    draw_contour
-    title(['Recovered (alpha=', num2str(factors(i)), ')'])
-end
-
-figure
-plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale, 'b')
-hold on
-plot_quivers_true_size(theta, phi, Y_recover{2}(1:N)/scale, Y_recover{2}(N+1:end)/scale, [1.000000 0.000000 0.500000])
+plot_quivers_true_size(theta, phi, Y_recover{index_AIC}(1:N)/scale, Y_recover{index_AIC}(N+1:end)/scale, [1.000000 0.000000 0.500000])
 draw_contour
 title('Signal and Recovered')
-legend('Signal', 'Recovered', 'Location', 'bestoutside')
+legend('Signal', 'Recovered', 'Location', 'Best')
 legend('boxoff')
-
-figure
-clear subplot
-subplot(1, 2, 1)
-stem(gamma(:, 1))
-hold on
-plot(betas{2}(1:M), 'r*')
-legend('True', 'Recovered')
-title('Curl-free')
-subplot(1, 2, 2)
-stem(gamma(:, 2))
-hold on
-plot(betas{2}(M+1:end), 'r*')
-legend('True', 'Recovered')
-title('Div-free')
