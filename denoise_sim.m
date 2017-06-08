@@ -86,17 +86,17 @@ for i = 1:n_factor
     df_tib(i) = rank(A_norm(:, beta~=0));
     AIC(i) = sum((Y-A_norm*beta).^2)/N/(tau_est^2)+2/N*df_tib(i);
     AICc(i) = AIC(i)+2*df_tib(i)*(df_tib(i)+1)/(N-df_tib(i)-1)/N;
-    MSE(i) = mean((Y_recover{i}-Y_signal).^2);
+    SSE(i) = sum((Y_recover{i}-Y_signal).^2);
 end
 
 % plot information criteria
 figure
-plot(factors, [MSE AIC AICc], '-o', 'LineWidth', 1.5)
-legend('MSE', 'AIC', 'AICc', 'Location', 'Best')
+plot(factors, [SSE AIC AICc], '-o', 'LineWidth', 1.5)
+legend('SSE', 'AIC', 'AICc', 'Location', 'Best')
 set(gca, 'FontSize', 12)
 hold on
-[~, index_MSE] = min(MSE);
-plot(factors(index_MSE), MSE(index_MSE), 'r*')
+[~, index_SSE] = min(SSE);
+plot(factors(index_SSE), MSE(index_SSE), 'r*')
 [~, index_AIC] = min(AIC);
 plot(factors(index_AIC), AIC(index_AIC), 'r*')
 xlabel('c_i')
