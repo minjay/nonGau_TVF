@@ -57,7 +57,9 @@ beta_est_sub = pinv(A_norm_sub)*Y;
 beta_est = pinv(A_norm)*Y;
 resid_sub = Y-A_norm_sub*beta_est_sub;
 resid = Y-A_norm*beta_est;
-tau_est = std(resid_sub)
+%tau_est = std(resid_sub)
+% check the sensitivity of lambda w.r.t. tau_est
+tau_est = tau*0.75
 std(resid)
 % MAD/0.6745
 median(abs(resid_sub-median(resid_sub)))/0.6745
