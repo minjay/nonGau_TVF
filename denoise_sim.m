@@ -70,7 +70,7 @@ Y_recover = cell(n_factor, 1);
 betas = cell(n_factor, 1);
 AIC = zeros(n_factor, 1);
 AICc = zeros(n_factor, 1);
-MSE = zeros(n_factor, 1);
+SSE = zeros(n_factor, 1);
 df_zou = zeros(n_factor, 1);
 % this is more appropriate
 df_tib = zeros(n_factor, 1);
@@ -96,7 +96,7 @@ legend('SSE', 'AIC', 'AICc', 'Location', 'Best')
 set(gca, 'FontSize', 12)
 hold on
 [~, index_SSE] = min(SSE);
-plot(factors(index_SSE), MSE(index_SSE), 'r*')
+plot(factors(index_SSE), SSE(index_SSE), 'r*')
 [~, index_AIC] = min(AIC);
 plot(factors(index_AIC), AIC(index_AIC), 'r*')
 xlabel('c_i')
