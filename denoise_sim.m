@@ -92,7 +92,7 @@ end
 % plot information criteria
 figure
 plot(factors, [L2_err AIC AICc], '-o', 'LineWidth', 1.5)
-legend('L2_err', 'AIC', 'AICc', 'Location', 'Best')
+legend('L2-err', 'AIC', 'AICc', 'Location', 'Best')
 set(gca, 'FontSize', 12)
 hold on
 [~, index_L2_err] = min(L2_err);
