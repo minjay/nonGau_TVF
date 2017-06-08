@@ -78,7 +78,7 @@ Y_recover = cell(n_factor, 1);
 betas = cell(n_factor, 1);
 AIC = zeros(n_factor, 1);
 AICc = zeros(n_factor, 1);
-L2_err = zeros(n_factor, 1);
+MSE = zeros(n_factor, 1);
 df_zou = zeros(n_factor, 1);
 % this is more appropriate
 df_tib = zeros(n_factor, 1);
