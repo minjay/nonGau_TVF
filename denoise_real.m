@@ -123,7 +123,7 @@ xlabel('c_i')
 figure
 subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.02], [0.05 0.05], [0.01 0.01]);
 % between 3 and 5
-scale = 4;
+scale = 100;
 subplot(1, 2, 1)
 plot_quivers_true_size(theta, phi, Y(1:N)/scale, Y(N+1:end)/scale, 'b')
 hold on
