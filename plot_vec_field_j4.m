@@ -2,8 +2,8 @@ clear
 clc
 
 B = 2;
-j_min = 3;
-j_max = 3;
+j_min = 4;
+j_max = 4;
 
 % the sampling locations
 Nside = 16;
@@ -71,5 +71,5 @@ th2 = th;
 lam2 = pi+0*th;
 [xh2,yh2] = sph2hammer(lam2,th2);
 
-save('vec_field_j3.mat', 'HX', 'HY', 'vec_field_sum_t', 'vec_field_sum_g',...
+save('vec_field_j4.mat', 'HX', 'HY', 'vec_field_sum_t', 'vec_field_sum_g',...
     'xh', 'yh', 'xh2', 'yh2')
