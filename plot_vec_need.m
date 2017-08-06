@@ -9,19 +9,19 @@ Nside = 16;
 [Psi_2_uv_j2, Psi_3_uv_j2, theta, phi] = get_vec_need(j, B, Nside);
 subplot(2, 2, 1)
 plot_quivers(theta, phi, Psi_2_uv_j2(1, :)', Psi_2_uv_j2(2, :)')
-title('i=2, j=2')
+title('i=2, j=2', 'FontWeight', 'Normal', 'fontsize', 12)
 subplot(2, 2, 2)
 plot_quivers(theta, phi, Psi_3_uv_j2(1, :)', Psi_3_uv_j2(2, :)')
-title('i=3, j=2')
+title('i=3, j=2', 'FontWeight', 'Normal', 'fontsize', 12)
 
 j = 3;
 [Psi_2_uv_j3, Psi_3_uv_j3, theta, phi] = get_vec_need(j, B, Nside);
 subplot(2, 2, 3)
 plot_quivers(theta, phi, Psi_2_uv_j3(1, :)', Psi_2_uv_j3(2, :)')
-title('i=2, j=3')
+title('i=2, j=3', 'FontWeight', 'Normal', 'fontsize', 12)
 subplot(2, 2, 4)
 plot_quivers(theta, phi, Psi_3_uv_j3(1, :)', Psi_3_uv_j3(2, :)')
-title('i=3, j=3')
+title('i=3, j=3', 'FontWeight', 'Normal', 'fontsize', 12)
 
 theta = pi/2-theta;
 phi(phi>pi)=phi(phi>pi)-2*pi;
