@@ -23,5 +23,17 @@ subplot(2, 2, 4)
 plot_quivers(theta, phi, Psi_3_uv_j3(1, :)', Psi_3_uv_j3(2, :)')
 title('i=3, j=3')
 
-save('vec_need.mat', 'theta', 'phi', 'Psi_2_uv_j2', 'Psi_3_uv_j2',...
+theta = pi/2-theta;
+phi(phi>pi)=phi(phi>pi)-2*pi;
+
+[HX, HY] = sph2hammer(phi, theta);
+
+th = linspace(-pi/2,pi/2,101);
+lam = -pi+0*th;
+[xh,yh] = sph2hammer(lam,th);
+th2 = th;
+lam2 = pi+0*th;
+[xh2,yh2] = sph2hammer(lam2,th2);
+
+save('vec_need.mat', 'HX', 'HY', 'th', 'lam', 'th2', 'lam2', 'Psi_2_uv_j2', 'Psi_3_uv_j2',...
     'Psi_2_uv_j3', 'Psi_3_uv_j3')
