@@ -134,6 +134,6 @@ plot_quivers_true_size(theta, phi, Y_signal(1:N)/scale, Y_signal(N+1:end)/scale,
 hold on
 plot_quivers_true_size(theta, phi, Y_recover{index_AIC}(1:N)/scale, Y_recover{index_AIC}(N+1:end)/scale, [1.000000 0.000000 0.500000])
 draw_contour
-title('Signal and Recovered')
-legend('Signal', 'Recovered', 'Location', 'Best')
+title('True and Recovered')
+legend('True', 'Recovered', 'Location', 'Best')
 legend('boxoff')
