@@ -102,23 +102,17 @@ end
 
 % plot information criteria
 figure
-subplot(2, 1, 1)
-plot(factors, MSE, '-o', 'LineWidth', 1.5)
-legend('MSE', 'Location', 'Best')
-set(gca, 'FontSize', 12)
+plot(factors(1:20), [MSE(1:20) AIC(1:20)], '-o', 'LineWidth', 1.5)
+legend('MSE', 'AIC', 'Location', 'Best')
 hold on
 [~, index_MSE] = min(MSE);
-plot(factors(index_MSE), MSE(index_MSE), 'r*')
-subplot(2, 1, 2)
-plot(factors, [AIC AICc], '-o', 'LineWidth', 1.5)
-legend('AIC', 'AICc', 'Location', 'Best')
-set(gca, 'FontSize', 12)
-hold on
+plot(factors(index_MSE), MSE(index_MSE), 'r*', 'MarkerSize', 8)
+text(factors(index_MSE)-0.02, MSE(index_MSE)-0.15, num2str(factors(index_MSE)))
 [~, index_AIC] = min(AIC);
-plot(factors(index_AIC), AIC(index_AIC), 'r*')
-[~, index_AICc] = min(AICc);
-plot(factors(index_AICc), AICc(index_AICc), 'r*')
-xlabel('c_i')
+plot(factors(index_AIC), AIC(index_AIC), 'r*', 'MarkerSize', 8)
+text(factors(index_AIC)-0.03, AIC(index_AIC)+0.15, num2str(factors(index_AIC)))
+xlabel('$c_i$', 'interpreter', 'latex')
+set(gca, 'FontSize', 14)
 
 figure
 subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.02], [0.05 0.05], [0.01 0.01]);
