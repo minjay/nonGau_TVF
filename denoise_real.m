@@ -107,10 +107,14 @@ legend('MSE', 'AIC', 'Location', 'Best')
 hold on
 [~, index_MSE] = min(MSE);
 plot(factors(index_MSE), MSE(index_MSE), 'r*', 'MarkerSize', 8)
-text(factors(index_MSE)-0.02, MSE(index_MSE)-0.15, num2str(factors(index_MSE)))
+ht = text(factors(index_MSE)-0.02, MSE(index_MSE)-0.1, num2str(factors(index_MSE)));
+ht.Color = [0 0.4470 0.7410];
+ht.FontSize = 12;
 [~, index_AIC] = min(AIC);
 plot(factors(index_AIC), AIC(index_AIC), 'r*', 'MarkerSize', 8)
-text(factors(index_AIC)-0.03, AIC(index_AIC)+0.15, num2str(factors(index_AIC)))
+ht = text(factors(index_AIC)-0.02, AIC(index_AIC)+0.1, num2str(factors(index_AIC)));
+ht.Color = [0.8500 0.3250 0.0980];
+ht.FontSize = 12;
 xlabel('$c_i$', 'interpreter', 'latex')
 set(gca, 'FontSize', 14)
 
